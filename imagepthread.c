@@ -14,6 +14,7 @@
 int thread_count;
 enum KernelTypes type;
 Image srcImage,destImage,bwImage; 
+int my_rows;
 
 //An array of kernel matrices to be used for image convolution.  
 //The indexes of these match the enumeration from the header file. ie. algorithms[BLUR] returns the kernel corresponding to a box blur.
@@ -73,8 +74,8 @@ void* convolute(void* rank){
     long my_rank=(long) rank;
     long long i;
 
-    long my_rows=(src->height)/thread_count;
-    printf("%ld",(src->height));
+    // long my_rows=(src->height)/thread_count;
+    // printf("%ld",(src->height));
     
     long long my_first=my_rows*my_rank;
     long long my_last = (my_rank == thread_count - 1) ? src->height : my_first + my_rows;
@@ -145,8 +146,8 @@ int main(int argc,char** argv){
 
 
     thread_handles=(pthread_t*)malloc(thread_count*sizeof(pthread_t));
-    // long my_rows=((&srcImage)->height)/thread_count;
-    // printf("%ld",((&srcImage)->height));
+    my_rows=((&srcImage)->height)/thread_count;
+    
 
     for(thread=0;thread<thread_count;thread++){
         pthread_create(&thread_handles[thread],NULL,&convolute,(void*)thread);
